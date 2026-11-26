@@ -75,7 +75,7 @@ const mov=document.querySelector('.movies');
 const was=document.querySelector('.watchlist_area')
 const wa=document.querySelector('.watchlist_area1');
 const swa=document.querySelector('.swatchlist_area');
-const max=120;
+const max=100;
 function bifurcateMovieData(data){
     data.results.forEach((movie)=>{
         const title=movie.title;
@@ -93,6 +93,18 @@ function bifurcateMovieData(data){
     const rd=document.createElement("h3");
     const rt=document.createElement("h3");
     const add=document.createElement("button");
+    const urev=document.createElement("textarea");
+    const urt=document.createElement("input");
+    const sb=document.createElement("button");
+    urev.placeholder="Leave a Review";
+    urev.rows=3;
+    sb.className="submit";
+    sb.innerText="Submit";
+    urt.type="number";
+    urt.min="0";
+    urt.max="10";
+    urt.step="0.5";
+    urt.placeholder="Your rating";
 
     rating=Math.round(rating*100);
     rating=rating/100;
@@ -114,7 +126,20 @@ function bifurcateMovieData(data){
     card.append(desc1);
     card.append(rd);
     card.append(rt);
+    card.append(urev);
+    card.append(urt);
+    card.append(sb);
     card.append(add);
+    
+    sb.addEventListener('submit',()=>{
+        const revText=urev.value.trim();
+        const revnum=Number(urt.value);
+        const disp=document.createElement("div");
+        disp.innerText="User Review:\n"+ revText + "\n"+"User Rating : "+revnum;
+        urev.remove();
+        urt.remove();
+        card.append(disp);
+    })
     mov.append(card);
     add.addEventListener('click',()=>{
         
@@ -164,6 +189,18 @@ function bifurcateMoreMovies(new_response){
     const rd=document.createElement("h3");
     const rt=document.createElement("h3");
     const add=document.createElement("button");
+    const urev=document.createElement("textarea");
+    const urt=document.createElement("input");
+    const sb=document.createElement("button");
+    urev.placeholder="Leave a Review";
+    urev.rows=3;
+    sb.className="submit";
+    sb.innerText="Submit";
+    urt.type="number";
+    urt.min="0";
+    urt.max="10";
+    urt.step="0.5";
+    urt.placeholder="Your rating";
 
     const poster_path=new_response.poster_path;
     const posterURL=`https://image.tmdb.org/t/p/w500${poster_path}`;
@@ -173,8 +210,8 @@ function bifurcateMoreMovies(new_response){
     add.innerText="Add+";
 
     title.innerText=new_response.title;
-    if(new_response.overview.length>120){
-        desc.innerText=new_response.overview.slice(0,120).trim()+"...";
+    if(new_response.overview.length>100){
+        desc.innerText=new_response.overview.slice(0,100).trim()+"...";
     }
     else{
         desc.innerText=new_response.overview;
@@ -191,7 +228,21 @@ function bifurcateMoreMovies(new_response){
     card.append(desc);
     card.append(rd);
     card.append(rt);
+    
+    card.append(urev);
+    card.append(urt);
+    card.append(sb);
     card.append(add);
+    
+    sb.addEventListener('submit',()=>{
+        const revText=urev.value.trim();
+        const revnum=Number(urt.value);
+        const disp=document.createElement("div");
+        disp.innerText="User Review:\n"+ revText + "\n"+"User Rating : "+revnum;
+        urev.remove();
+        urt.remove();
+        card.append(disp);
+    })
     mov1.append(card);
     add.addEventListener('click',()=>{
         
@@ -250,6 +301,18 @@ function bifurcateEvenMoreMovies(new_response){
     const rd=document.createElement("h3");
     const rt=document.createElement("h3");
     const add=document.createElement("button");
+    const urev=document.createElement("textarea");
+    const urt=document.createElement("input");
+    const sb=document.createElement("button");
+    urev.placeholder="Leave a Review";
+    urev.rows=3;
+    sb.className="submit";
+    urt.type="number";
+    sb.innerText="Submit";
+    urt.min="0";
+    urt.max="10";
+    urt.step="0.5";
+    urt.placeholder="Your rating";
 
     const poster_path=new_response.poster_path;
     const posterURL=`https://image.tmdb.org/t/p/w500${poster_path}`;
@@ -259,8 +322,8 @@ function bifurcateEvenMoreMovies(new_response){
     add.innerText="Add+";
 
     title.innerText=new_response.title;
-    if(new_response.overview.length>120){
-        desc.innerText=new_response.overview.slice(0,120).trim()+"...";
+    if(new_response.overview.length>100){
+        desc.innerText=new_response.overview.slice(0,100).trim()+"...";
     }
     else{
         desc.innerText=new_response.overview;
@@ -278,6 +341,20 @@ function bifurcateEvenMoreMovies(new_response){
     card.append(rd);
     card.append(rt);
     card.append(add);
+    card.append(urev);
+    card.append(urt);
+    card.append(sb);
+    card.append(add);
+    
+    sb.addEventListener('submit',()=>{
+        const revText=urev.value.trim();
+        const revnum=Number(urt.value);
+        const disp=document.createElement("div");
+        disp.innerText="User Review:\n"+ revText + "\n"+"User Rating : "+revnum;
+        urev.remove();
+        urt.remove();
+        card.append(disp);
+    })
     mov5.append(card);
     add.addEventListener('click',()=>{
         
