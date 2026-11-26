@@ -146,6 +146,7 @@ async function getMoreMovies(){
             throw new Error(`Response is not working ${response.status}`);
         }
         const new_response= await second_response.json();
+        
         bifurcateMoreMovies(new_response);
     }
     catch(error){
@@ -207,18 +208,110 @@ function bifurcateMoreMovies(new_response){
     })
     
 }
+
+const mov5=document.querySelector(".movies2");
+let mov6=undefined;
+async function getEvenMoreMovies(){
+    try{
+        let p=1;
+        for(p=1;p<=5;p++){
+            const second_response= await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=e00916475442260629a8a8e7fe5f12c9&page=${p}`,{
+            method:"GET",
+            headers:{
+                "accept":"application/json",
+                "Authorization":'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDA5MTY0NzU0NDIyNjA2MjlhOGE4ZTdmZTVmMTJjOSIsIm5iZiI6MTc5NTQ1Mzg5Ny44NjMwMDAyLCJzdWIiOiI2YjA0NzNjOTg3NGZhNzdiMzI5MTg1Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.BhiGNznIaEJHnHXtjmLz9CgL6l6dJzyTFs2DC2WXyH4'
+            }
+        })
+
+        if(!second_response.ok){
+            throw new Error(`Response is not working ${second_response.status}`);
+        }
+        const new_response= await second_response.json();
+        console.log("Fetched page:", p, "First movie:", new_response.results?.[0]?.title, "Count:", new_response.results?.length);
+        bifurcateEvenMoreMovies(new_response);
+        }
+        mov6=mov5.querySelectorAll(".movie");
+        console.log("Found .movie cards:", mov6.length);
+        mov6.forEach((card)=>{
+            card.style.display="none";
+        })
+    }
+    catch(error){
+        console.error("Error fetching movie data:",error.message);
+    }
+}
+getEvenMoreMovies();
+function bifurcateEvenMoreMovies(new_response){
+    new_response.results.forEach((new_response)=>{
+    const card=document.createElement("div");
+    const poster=document.createElement("img");
+    const desc=document.createElement("p");
+    const title=document.createElement("h2");
+    const rd=document.createElement("h3");
+    const rt=document.createElement("h3");
+    const add=document.createElement("button");
+
+    const poster_path=new_response.poster_path;
+    const posterURL=`https://image.tmdb.org/t/p/w500${poster_path}`;
+
+    poster.src=posterURL;
+    poster.alt=new_response.title;
+    add.innerText="Add+";
+
+    title.innerText=new_response.title;
+    if(new_response.overview.length>120){
+        desc.innerText=new_response.overview.slice(0,120).trim()+"...";
+    }
+    else{
+        desc.innerText=new_response.overview;
+    }
+    rd.innerText=new_response.release_date;
+    const va=Math.round(100*new_response.vote_average)/100;
+    rt.innerText="⭐"+va;
+    add.innerText="Add+";
+
+    card.classList.toggle("movie");
+
+    card.append(poster);
+    card.append(title);
+    card.append(desc);
+    card.append(rd);
+    card.append(rt);
+    card.append(add);
+    mov5.append(card);
+    add.addEventListener('click',()=>{
+        
+        if(add.classList.toggle('clicked_button')){
+            add.innerText="Added"+"✔️";
+            wa.append(card);
+        }
+        else{
+            add.innerText="Add+";
+            card.remove();
+            mov5.append(card);
+        }
+    })
+    
+    })
+    console.log("Total cards in mov5:", mov5.children.length);
+}
 const s=document.getElementById("search_bar");
 const si=document.getElementById("search_input");
 const i=document.querySelector(".invalid");
 const st=document.querySelectorAll(".segment_title");
+
 s.addEventListener('submit',(event)=>{
     const mov2=mov.querySelectorAll(".movie");
     const mov3=mov1.querySelectorAll(".movie");
+    const mov4=wa.querySelectorAll(".movie");
+    
     let count=0;
     event.preventDefault();
     let search=si.value.trim();
     i.style.display="none";
+    
     if(!search){
+        was.style.display="none";
         st.forEach((st)=>{
             st.style.display="block";
         })
@@ -229,32 +322,71 @@ s.addEventListener('submit',(event)=>{
         mov3.forEach((card)=>{
             card.style.display="flex";
         })
+        mov6.forEach((card)=>{
+            card.style.display="none";
+        })
         return;
     }
     st.forEach((st)=>{
             st.style.display="none";
         })
-    mov2.forEach((card)=>{
+    mov3.forEach((mov3)=>{
+            mov3.style.display="none";
+        })
+    mov6.forEach((card)=>{
+            card.style.display="none";
+        })
+    const u=[];
+    mov4.forEach((card)=>{
         const title=card.querySelector("h2");
         const comp=title.innerText.slice(0,search.length).toLowerCase();
         search=search.toLowerCase();
         if(comp==search){
             
             count++;
+            was.style.display="block";
             card.style.display="flex";
+            u.push(title.innerText);
         }
         else{
             card.style.display="none"
         }
     })
-    mov3.forEach((card)=>{
+    mov2.forEach((card)=>{
         const title=card.querySelector("h2");
         const comp=title.innerText.slice(0,search.length).toLowerCase();
         search=search.toLowerCase();
-        if(comp==search){
+        let b=true;
+        u.forEach((tit)=>{
+            if(title.innerText==tit){
+                b=false;
+            }
+        })
+        if(comp==search && b){
             
             count++;
             card.style.display="flex";
+            u.push(title.innerText);
+        }
+        else{
+            card.style.display="none"
+        }
+    })
+    mov6.forEach((card)=>{
+        const title=card.querySelector("h2");
+        const comp=title.innerText.slice(0,search.length).toLowerCase();
+        search=search.toLowerCase();
+        let b=true;
+        u.forEach((tit)=>{
+            if(title.innerText==tit){
+                b=false;
+            }
+        })
+        if(comp==search && b){
+            
+            count++;
+            card.style.display="flex";
+            u.push(title.innerText);
         }
         else{
             card.style.display="none"

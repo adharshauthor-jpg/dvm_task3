@@ -53,7 +53,7 @@ body{
   margin-top:10%;
 }
 .punch_line{
-  font-size:4rem;
+  font-size:clamp(0.5rem,3rem,5rem);
   color:#ffffff;
   font-family: 'Science Gothic', cursive;
 }
@@ -109,13 +109,13 @@ body{
   justify-content:center;
   font-family:"Science Gothic";
   margin-top:40%;
-  font-size:5rem;
+  font-size:clamp(0.5rem,3rem,5rem);
 }
 .text2{
   display:flex;
   justify-content:center;
   font-family:"Science Gothic";
-  font-size:5rem;
+  font-size:clamp(0.5rem,5rem,7rem);
 }
 .movie img{
   border-radius:10px 10px 0px 0px;
@@ -207,14 +207,13 @@ body{
   padding-left:1%;
   padding-right:1%;
   margin-bottom:5%;
+  margin-top:5%;
+  transform:scale(2);
 }
 .watchlist1 button:hover{
   background:radial-gradient(rgb(255, 1, 221,0.89),rgba(236, 4, 4, 0.89));
   cursor: pointer;
   border-radius:10px;
-}
-.movie add{
-  width:10%;
 }
 .watchlist_area{
   display:none;
@@ -237,4 +236,11 @@ body{
   column-gap:20px;
   margin-left:5%;
   justify-content:center;
+}
+.movies2{
+  display:flex;
+  margin-left:5%;
+  gap:5%;
+  flex-wrap:wrap;
+  row-gap:50px;
 }
