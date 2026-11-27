@@ -329,6 +329,20 @@ body{
   flex-wrap:wrap;
   row-gap:50px;
   margin-top:5%;
+  padding-top:5%;
+}
+.movie:hover {
+  transform: translateY(-4px);
+  border-color: #474849;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+  border-radius:10px;
+  background-color:#474849;
+  padding:1%;
+}
+.movie textarea,
+.movie input,
+.movie button {
+  margin-top: 8px;
 }
 .movie textarea{
   background-color:rgba(0, 0, 0, 0);

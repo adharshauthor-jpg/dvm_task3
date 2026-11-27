@@ -5,6 +5,10 @@ const h2=document.querySelector(".hero2");
 const h3=document.querySelector(".hero3");
 const h4=document.querySelector(".hero4");
 const l1=document.querySelector(".line");
+const mov=document.querySelector('.movies');
+const was=document.querySelector('.watchlist_area')
+const wa=document.querySelector('.watchlist_area1');
+const swa=document.querySelector('.swatchlist_area');
 window.addEventListener("scroll",()=>{
     const u1=h1.getBoundingClientRect();
     const u2=h2.getBoundingClientRect();
@@ -71,10 +75,7 @@ async function getMovies(){
     }
 }
 getMovies();
-const mov=document.querySelector('.movies');
-const was=document.querySelector('.watchlist_area')
-const wa=document.querySelector('.watchlist_area1');
-const swa=document.querySelector('.swatchlist_area');
+
 const max=100;
 function bifurcateMovieData(data){
     data.results.forEach((movie)=>{
@@ -131,7 +132,7 @@ function bifurcateMovieData(data){
     card.append(sb);
     card.append(add);
     
-    sb.addEventListener('submit',()=>{
+    sb.addEventListener('click',()=>{
         const revText=urev.value.trim();
         const revnum=Number(urt.value);
         const disp=document.createElement("div");
@@ -234,7 +235,7 @@ function bifurcateMoreMovies(new_response){
     card.append(sb);
     card.append(add);
     
-    sb.addEventListener('submit',()=>{
+    sb.addEventListener('click',()=>{
         const revText=urev.value.trim();
         const revnum=Number(urt.value);
         const disp=document.createElement("div");
@@ -340,13 +341,12 @@ function bifurcateEvenMoreMovies(new_response){
     card.append(desc);
     card.append(rd);
     card.append(rt);
-    card.append(add);
     card.append(urev);
     card.append(urt);
     card.append(sb);
     card.append(add);
     
-    sb.addEventListener('submit',()=>{
+    sb.addEventListener('click',()=>{
         const revText=urev.value.trim();
         const revnum=Number(urt.value);
         const disp=document.createElement("div");
@@ -382,7 +382,65 @@ const mov4=wa.querySelectorAll(".movie");
 mov6=mov5.querySelectorAll(".movie");
 const sr=document.querySelector(".search_result");
 const srr=sr.querySelectorAll(".movie");
-s.addEventListener('submit',(submit)=>{
+s.addEventListener("submit", (submit) => {
+  submit.preventDefault();
+  mov.style.display = "none";
+  mov1.style.display = "none";
+  sr.innerHTML = "";
+  sr.style.display = "flex";
+  st.forEach((el) => {
+    el.style.display = "none";
+  });
+  i.style.display = "none";
+
+  const q = si.value.trim();
+  if (!q) {
+    sr.innerHTML = "";
+    sr.style.display = "none";
+    was.style.display = "none";
+    i.style.display = "none";
+    mov.style.display = "flex";
+    mov1.style.display = "flex";
+    st.forEach((el) => {
+      el.style.display = "none";
+    });
+    return;
+  }
+
+  getAllMovies();
+
+  async function getAllMovies() {
+    try {
+      const my_response = await fetch(
+        `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(q)}`,
+        {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDA5MTY0NzU0NDIyNjA2MjlhOGE4ZTdmZTVmMTJjOSIsIm5iZiI6MTc5NTQ1Mzg5Ny44NjMwMDAyLCJzdWIiOiI2YjA0NzNjOTg3NGZhNzdiMzI5MTg1Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.BhiGNznIaEJHnHXtjmLz9CgL6l6dJzyTFs2DC2WXyH4",
+          },
+        }
+      );
+
+      if (!my_response.ok) {
+        throw new Error(`Unable to fetch response ${my_response.status}`);
+      }
+
+      const new_my_response = await my_response.json();
+      bifurcateAllMovies(new_my_response);
+    } catch (error) {
+      console.error("Error fetching movie data:", error.message);
+    }
+  }
+
+  function bifurcateAllMovies(new_my_response) {
+    (new_my_response.results || []).forEach((movieItem) => {
+      createMovieCard(movieItem, sr);
+    });
+  }
+});
+/* s.addEventListener('submit',(submit)=>{
     submit.preventDefault();
     mov.style.display="none";
     mov1.style.display="none";
@@ -500,9 +558,92 @@ function bifurcateAllMovies(new_my_response){
     })
     
 }
-})
+}) */
+s.addEventListener("submit", (submit) => {
+  submit.preventDefault();
+  mov.style.display = "none";
+  mov1.style.display = "none";
+  sr.innerHTML = "";
+  sr.style.display = "flex";
+  st.forEach((el) => {
+    el.style.display = "none";
+  });
+  i.style.display = "none";
 
-s.addEventListener('submit',(submit)=>{
+  const q = si.value.trim();
+  if (!q) {
+    sr.innerHTML = "";
+    sr.style.display = "none";
+    was.style.display = "none";
+    i.style.display = "none";
+    mov.style.display = "flex";
+    mov1.style.display = "flex";
+    return;
+  }
+
+  getActorId();
+
+  async function getActorId() {
+    try {
+      const m_response = await fetch(
+        `https://api.themoviedb.org/3/search/person?query=${encodeURIComponent(q)}`,
+        {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDA5MTY0NzU0NDIyNjA2MjlhOGE4ZTdmZTVmMTJjOSIsIm5iZiI6MTc5NTQ1Mzg5Ny44NjMwMDAyLCJzdWIiOiI2YjA0NzNjOTg3NGZhNzdiMzI5MTg1Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.BhiGNznIaEJHnHXtjmLz9CgL6l6dJzyTFs2DC2WXyH4",
+          },
+        }
+      );
+
+      if (!m_response.ok) {
+        throw new Error(`Unable to find actor name ${m_response.status}`);
+      }
+
+      const n_response = await m_response.json();
+      const actorId = n_response.results?.[0]?.id;
+      if (!actorId) return;
+
+      getActorMovies(actorId);
+    } catch (error) {
+      console.error("New Error found:", error.message);
+    }
+  }
+
+  async function getActorMovies(actor_id) {
+    if (!actor_id) return;
+    try {
+      const id_response = await fetch(
+        `https://api.themoviedb.org/3/discover/movie?with_cast=${actor_id}&sort_by=popularity.desc`,
+        {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDA5MTY0NzU0NDIyNjA2MjlhOGE4ZTdmZTVmMTJjOSIsIm5iZiI6MTc5NTQ1Mzg5Ny44NjMwMDAyLCJzdWIiOiI2YjA0NzNjOTg3NGZhNzdiMzI5MTg1Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.BhiGNznIaEJHnHXtjmLz9CgL6l6dJzyTFs2DC2WXyH4",
+          },
+        }
+      );
+
+      if (!id_response.ok) {
+        throw new Error(`Unable to recieve actor work ${id_response.status}`);
+      }
+
+      const n_id_response = await id_response.json();
+      bifurcateActorMovies(n_id_response);
+    } catch (error) {
+      console.error("New Error found:", error.message);
+    }
+  }
+
+  function bifurcateActorMovies(new_my_response) {
+    (new_my_response.results || []).forEach((movieItem) => {
+      createMovieCard(movieItem, sr);
+    });
+  }
+});
+/* s.addEventListener('submit',(submit)=>{
     submit.preventDefault();
     mov.style.display="none";
     mov1.style.display="none";
@@ -637,10 +778,217 @@ s.addEventListener('submit',(submit)=>{
     
 }
 
-})
+}) */
 
+const WATCHLIST_KEY = "watchlist";
 
-s.addEventListener('submit',(submit)=>{
+function getWatchlist() {
+  try {
+    const raw = localStorage.getItem(WATCHLIST_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (err) {
+    console.error("Error reading watchlist:", err);
+    return [];
+  }
+}
+
+function setWatchlist(items) {
+  localStorage.setItem(WATCHLIST_KEY, JSON.stringify(items));
+}
+
+function createMovieCard(movie, targetContainer = sr) {
+  const movieId = movie.id ?? movie.title;
+  const card = document.createElement("div");
+  const poster = document.createElement("img");
+  const desc = document.createElement("p");
+  const title = document.createElement("h2");
+  const rd = document.createElement("h3");
+  const rt = document.createElement("h3");
+  const add = document.createElement("button");
+  const urev = document.createElement("textarea");
+  const urt = document.createElement("input");
+  const sb = document.createElement("button");
+
+  urev.placeholder = "Leave a Review";
+  urt.placeholder = "Your rating";
+  sb.innerText = "Submit";
+
+  poster.src = movie.poster_path
+    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+    : "";
+  poster.alt = movie.title || "Movie poster";
+
+  title.innerText = movie.title || "Untitled";
+
+  const overviewText = movie.overview || "";
+  desc.innerText =
+    overviewText.length > 100
+      ? overviewText.slice(0, 100).trim() + "..."
+      : overviewText;
+
+  rd.innerText = movie.release_date || "";
+  const va = Math.round(100 * (movie.vote_average || 0)) / 100;
+  rt.innerText = "⭐" + va;
+
+  const isAlreadySaved = getWatchlist().some((item) => item.id === movieId);
+  if (isAlreadySaved) {
+    add.classList.add("clicked_button");
+    add.innerText = "Added✔️";
+  } else {
+    add.innerText = "Add+";
+  }
+
+  card.classList.add("movie");
+  card.style.display = "flex";
+
+  card.append(poster, title, desc, rd, rt, urev, urt, sb, add);
+  targetContainer.append(card);
+
+  sb.addEventListener("click", () => {
+    const revText = urev.value.trim();
+    const revnum = Number(urt.value);
+    const disp = document.createElement("div");
+    disp.innerText = "User Review:\n" + revText + "\n" + "User Rating : " + revnum;
+    sb.remove();
+    urev.remove();
+    urt.remove();
+    card.append(disp);
+  });
+
+  add.addEventListener("click", () => {
+    let watchlist = getWatchlist();
+
+    if (add.classList.toggle("clicked_button")) {
+      add.innerText = "Added✔️";
+      wa.append(card);
+
+      if (!watchlist.some((item) => item.id === movieId)) {
+        watchlist.push({
+          id: movieId,
+          title: movie.title,
+          poster_path: movie.poster_path,
+          overview: movie.overview,
+          release_date: movie.release_date,
+          vote_average: movie.vote_average,
+        });
+        setWatchlist(watchlist);
+      }
+    } else {
+      add.innerText = "Add+";
+      card.remove();
+      mov5.append(card);
+
+      watchlist = watchlist.filter((item) => item.id !== movieId);
+      setWatchlist(watchlist);
+    }
+  });
+
+  return card;
+}
+
+function renderWatchlist() {
+  const watchlist = getWatchlist();
+  wa.innerHTML = "";
+
+  if (watchlist.length === 0) {
+    wa.innerHTML = "<p>Your watchlist is empty.</p>";
+    return;
+  }
+
+  watchlist.forEach((savedMovie) => {
+    createMovieCard(savedMovie, wa);
+  });
+}
+
+s.addEventListener("submit", (submit) => {
+  submit.preventDefault();
+  mov.style.display = "none";
+  mov1.style.display = "none";
+  sr.innerHTML = "";
+  sr.style.display = "flex";
+  st.forEach((el) => {
+    el.style.display = "none";
+  });
+  i.style.display = "none";
+
+  const q = si.value.trim();
+  if (!q) {
+    sr.innerHTML = "";
+    sr.style.display = "none";
+    was.style.display = "none";
+    i.style.display = "none";
+    mov.style.display = "flex";
+    mov1.style.display = "flex";
+    return;
+  }
+
+  getDirectorId();
+
+  async function getDirectorId() {
+    try {
+      const m_response = await fetch(
+        `https://api.themoviedb.org/3/search/person?query=${encodeURIComponent(q)}`,
+        {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDA5MTY0NzU0NDIyNjA2MjlhOGE4ZTdmZTVmMTJjOSIsIm5iZiI6MTc5NTQ1Mzg5Ny44NjMwMDAyLCJzdWIiOiI2YjA0NzNjOTg3NGZhNzdiMzI5MTg1Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.BhiGNznIaEJHnHXtjmLz9CgL6l6dJzyTFs2DC2WXyH4",
+          },
+        }
+      );
+
+      if (!m_response.ok) {
+        throw new Error(`Unable to find Director name ${m_response.status}`);
+      }
+
+      const n_response = await m_response.json();
+      const directorId = n_response.results?.[0]?.id;
+      if (!directorId) return;
+
+      getDirectorMovies(directorId);
+    } catch (error) {
+      console.error("New Error found:", error.message);
+    }
+  }
+
+  async function getDirectorMovies(directorId) {
+    if (!directorId) return;
+    try {
+      const id_response = await fetch(
+        `https://api.themoviedb.org/3/person/${directorId}/movie_credits`,
+        {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDA5MTY0NzU0NDIyNjA2MjlhOGE4ZTdmZTVmMTJjOSIsIm5iZiI6MTc5NTQ1Mzg5Ny44NjMwMDAyLCJzdWIiOiI2YjA0NzNjOTg3NGZhNzdiMzI5MTg1Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.BhiGNznIaEJHnHXtjmLz9CgL6l6dJzyTFs2DC2WXyH4",
+          },
+        }
+      );
+
+      if (!id_response.ok) {
+        throw new Error(`Unable to recieve director work ${id_response.status}`);
+      }
+
+      const n_id_response = await id_response.json();
+      const directed_response = (n_id_response.crew || []).filter(
+        (item) => item.job === "Director"
+      );
+
+      bifurcateDirectorMovies({ results: directed_response });
+    } catch (error) {
+      console.error("New Error found:", error.message);
+    }
+  }
+
+  function bifurcateDirectorMovies(new_my_response) {
+    new_my_response.results.forEach((movieItem) => {
+      createMovieCard(movieItem, sr);
+    });
+  }
+});
+/* s.addEventListener('submit',(submit)=>{
     submit.preventDefault();
     mov.style.display="none";
     mov1.style.display="none";
@@ -779,10 +1127,11 @@ s.addEventListener('submit',(submit)=>{
     
 }
 
-})
+}) */
 
 const wb=document.querySelector(".watchlist_button");
 wb.addEventListener('click',()=>{
+    renderWatchlist();
     if(was.classList.toggle("swatchlist_area")){
         was.style.display="block";
     }
