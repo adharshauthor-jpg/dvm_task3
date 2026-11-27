@@ -92,7 +92,7 @@ function bifurcateMovieData(data){
         card.append(disp);
     })
     mov.append(card);
-    add.addEventListener('click',()=>{
+    /* add.addEventListener('click',()=>{
         
         if(add.classList.toggle('clicked_button')){
             add.innerText="Added"+"✔️";
@@ -103,7 +103,34 @@ function bifurcateMovieData(data){
             card.remove();
             mov.append(card);
         }
-    })
+    }) */
+   add.addEventListener("click", () => {
+    let watchlist = getWatchlist();
+
+    if (add.classList.toggle("clicked_button")) {
+      add.innerText = "Added✔️";
+      wa.append(card);
+
+      if (!watchlist.some((item) => item.id === movieId)) {
+        watchlist.push({
+          id: movieId,
+          title: movie.title,
+          poster_path: movie.poster_path,
+          overview: movie.overview,
+          release_date: movie.release_date,
+          vote_average: movie.vote_average,
+        });
+        setWatchlist(watchlist);
+      }
+    } else {
+      add.innerText = "Add+";
+      card.remove();
+      mov5.append(card);
+
+      watchlist = watchlist.filter((item) => item.id !== movieId);
+      setWatchlist(watchlist);
+    }
+  });
     card.classList.toggle('movie');
     })
     
@@ -195,7 +222,7 @@ function bifurcateMoreMovies(new_response){
         card.append(disp);
     })
     mov1.append(card);
-    add.addEventListener('click',()=>{
+    /* add.addEventListener('click',()=>{
         
         if(add.classList.toggle('clicked_button')){
             add.innerText="Added"+"✔️";
@@ -206,7 +233,34 @@ function bifurcateMoreMovies(new_response){
             card.remove();
             mov1.append(card);
         }
-    })
+    }) */
+   add.addEventListener("click", () => {
+    let watchlist = getWatchlist();
+
+    if (add.classList.toggle("clicked_button")) {
+      add.innerText = "Added✔️";
+      wa.append(card);
+
+      if (!watchlist.some((item) => item.id === movieId)) {
+        watchlist.push({
+          id: movieId,
+          title: movie.title,
+          poster_path: movie.poster_path,
+          overview: movie.overview,
+          release_date: movie.release_date,
+          vote_average: movie.vote_average,
+        });
+        setWatchlist(watchlist);
+      }
+    } else {
+      add.innerText = "Add+";
+      card.remove();
+      mov5.append(card);
+
+      watchlist = watchlist.filter((item) => item.id !== movieId);
+      setWatchlist(watchlist);
+    }
+  });
     })
     
 }
@@ -306,7 +360,7 @@ function bifurcateEvenMoreMovies(new_response){
         card.append(disp);
     })
     mov5.append(card);
-    add.addEventListener('click',()=>{
+    /* add.addEventListener('click',()=>{
         
         if(add.classList.toggle('clicked_button')){
             add.innerText="Added"+"✔️";
@@ -317,7 +371,34 @@ function bifurcateEvenMoreMovies(new_response){
             card.remove();
             mov5.append(card);
         }
-    })
+    }) */
+   add.addEventListener("click", () => {
+    let watchlist = getWatchlist();
+
+    if (add.classList.toggle("clicked_button")) {
+      add.innerText = "Added✔️";
+      wa.append(card);
+
+      if (!watchlist.some((item) => item.id === movieId)) {
+        watchlist.push({
+          id: movieId,
+          title: movie.title,
+          poster_path: movie.poster_path,
+          overview: movie.overview,
+          release_date: movie.release_date,
+          vote_average: movie.vote_average,
+        });
+        setWatchlist(watchlist);
+      }
+    } else {
+      add.innerText = "Add+";
+      card.remove();
+      mov5.append(card);
+
+      watchlist = watchlist.filter((item) => item.id !== movieId);
+      setWatchlist(watchlist);
+    }
+  });
     
     })
     console.log("Total cards in mov5:", mov5.children.length);
@@ -853,10 +934,13 @@ function renderWatchlist() {
   const watchlist = getWatchlist();
   wa.innerHTML = "";
 
-  if (watchlist.length === 0) {
+  /* if (watchlist.length === 0) {
     wa.innerHTML = "<p>Your watchlist is empty.</p>";
     return;
   }
+  else{
+    wa.innerHTML="";
+  } */
 
   watchlist.forEach((savedMovie) => {
     createMovieCard(savedMovie, wa);
