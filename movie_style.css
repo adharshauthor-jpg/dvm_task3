@@ -140,7 +140,7 @@ body{
   width:20%;
   display:flex;
   flex-direction:column;
-  height:auto;
+  height:30%;
 }
 .movie h3{
   font-family:"Science Gothic";
@@ -154,7 +154,6 @@ body{
 .movie button:hover{
   background:radial-gradient(rgb(255, 1, 221,0.89),rgba(236, 4, 4, 0.89));
   cursor: pointer;
-  border-radius:10px;
 }
 .clicked_button{
   background-color:grey;
@@ -173,19 +172,103 @@ body{
   flex-wrap:wrap;
   row-gap:50px;
 }
-#search_bar{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  margin-bottom:5%;
+/* 1. The outer pill container (<form id="search_bar">) */
+#search_bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 560px;
+  height: 52px;
+  padding: 0 18px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 25% 50%, #10182b 0%, #090e1a 75%);
+  border: 1px solid #1d2b48;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 10px 28px rgba(0, 0, 0, 0.6);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  margin:24px auto;
 }
+
+/* Glows gently when the user clicks inside the input */
+#search_bar:focus-within {
+  border-color: #3b6fd8;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 3px rgba(59, 111, 216, 0.22),
+    0 12px 30px rgba(0, 0, 0, 0.65);
+}
+
+/* 2. The transparent text field (<input id="search_input">) */
+#search_input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #f1f5f9;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+#search_input::placeholder {
+  color: #64748b;
+  letter-spacing: 0.2px;
+}
+
+/* 3. The magnifying glass button (<button id="search_button">) */
+#search_button {
+  /* Move 🔍 to the left side like the screenshot; remove this line if you prefer it on the right */
+  order: -1;
+  margin-right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+  margin:0 auto;
+}
+
+#search_button:hover {
+  background-color: rgba(59, 111, 216, 0.15);
+  transform: scale(1.08);
+}
+
+#search_button:active {
+  transform: scale(0.95);
+}
+#search_input,
+#search_input:focus,
+#search_input:active {
+  background-color: transparent !important;
+  background: transparent !important;
+  color: #f1f5f9 !important;
+  caret-color: #60a5fa;
+}
+
+/* Override Chrome/Edge/Safari autofill turning the input white */
+#search_input:-webkit-autofill,
+#search_input:-webkit-autofill:hover,
+#search_input:-webkit-autofill:focus,
+#search_input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #090e1a inset !important;
+  -webkit-text-fill-color: #f1f5f9 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+/* 
 #search_input{
   color:white;
   background-color:black;
   border-radius:2px 0px 0px 2px;
-  height:20%;
+  height:50%;
   width:80%;
-}
+} */
 .invalid1{
   display:flex;
   justify-content:center;
@@ -212,6 +295,7 @@ body{
   transform:scale(2);
 }
 .watchlist1 button:hover{
+  transform:translateY(-30%) scale(2);
   background:radial-gradient(rgb(255, 1, 221,0.89),rgba(236, 4, 4, 0.89));
   cursor: pointer;
   border-radius:10px;
@@ -244,18 +328,25 @@ body{
   gap:5%;
   flex-wrap:wrap;
   row-gap:50px;
+  margin-top:5%;
 }
 .movie textarea{
   background-color:rgba(0, 0, 0, 0);
   color:white;
-  border-radius:10px;
 }
 .movie input{
   background-color:rgba(0, 0, 0, 0);
   color:white;
-  border-radius:10px;
 }
 .movie button{
   width:100%;
   height:5%;
+  border-radius:0px;
+}
+.search_result{
+  display:flex;
+  margin-left:5%;
+  gap:5%;
+  flex-wrap:wrap;
+  row-gap:50px;
 }

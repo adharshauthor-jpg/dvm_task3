@@ -376,103 +376,411 @@ const s=document.getElementById("search_bar");
 const si=document.getElementById("search_input");
 const i=document.querySelector(".invalid");
 const st=document.querySelectorAll(".segment_title");
-
-s.addEventListener('submit',(event)=>{
-    const mov2=mov.querySelectorAll(".movie");
-    const mov3=mov1.querySelectorAll(".movie");
-    const mov4=wa.querySelectorAll(".movie");
-    
-    let count=0;
-    event.preventDefault();
-    let search=si.value.trim();
-    i.style.display="none";
-    
-    if(!search){
-        was.style.display="none";
-        st.forEach((st)=>{
-            st.style.display="block";
-        })
-        i.style.display="none";
-        mov2.forEach((card)=>{
-            card.style.display="flex";
-        })
-        mov3.forEach((card)=>{
-            card.style.display="flex";
-        })
-        mov6.forEach((card)=>{
-            card.style.display="none";
-        })
-        return;
-    }
+const mov2=mov.querySelectorAll(".movie");
+const mov3=mov1.querySelectorAll(".movie");
+const mov4=wa.querySelectorAll(".movie");
+mov6=mov5.querySelectorAll(".movie");
+const sr=document.querySelector(".search_result");
+const srr=sr.querySelectorAll(".movie");
+s.addEventListener('submit',(submit)=>{
+    submit.preventDefault();
+    mov.style.display="none";
+    mov1.style.display="none";
+    sr.innerHTML="";
+    sr.style.display="flex";
     st.forEach((st)=>{
             st.style.display="none";
         })
-    mov3.forEach((mov3)=>{
-            mov3.style.display="none";
+    i.style.display="none";
+    let q=si.value.trim();
+     if(!q){
+        sr.innerHTML="";
+        sr.style.display="none";
+        was.style.display="none";
+        st.forEach((st)=>{
+            st.style.display="flex";
         })
-    mov6.forEach((card)=>{
-            card.style.display="none";
+        i.style.display="none";
+        mov.style.display="flex";
+        mov1.style.display="flex";
+        st.forEach((st)=>{
+            st.style.display="none";
         })
-    const u=[];
-    mov4.forEach((card)=>{
-        const title=card.querySelector("h2");
-        const comp=title.innerText.slice(0,search.length).toLowerCase();
-        search=search.toLowerCase();
-        if(comp==search){
-            
-            count++;
-            was.style.display="block";
-            card.style.display="flex";
-            u.push(title.innerText);
-        }
-        else{
-            card.style.display="none"
-        }
-    })
-    mov2.forEach((card)=>{
-        const title=card.querySelector("h2");
-        const comp=title.innerText.slice(0,search.length).toLowerCase();
-        search=search.toLowerCase();
-        let b=true;
-        u.forEach((tit)=>{
-            if(title.innerText==tit){
-                b=false;
-            }
-        })
-        if(comp==search && b){
-            
-            count++;
-            card.style.display="flex";
-            u.push(title.innerText);
-        }
-        else{
-            card.style.display="none"
-        }
-    })
-    mov6.forEach((card)=>{
-        const title=card.querySelector("h2");
-        const comp=title.innerText.slice(0,search.length).toLowerCase();
-        search=search.toLowerCase();
-        let b=true;
-        u.forEach((tit)=>{
-            if(title.innerText==tit){
-                b=false;
-            }
-        })
-        if(comp==search && b){
-            
-            count++;
-            card.style.display="flex";
-            u.push(title.innerText);
-        }
-        else{
-            card.style.display="none"
-        }
-    })
-    if(count==0){
-        i.style.display="block";
+        return;
     }
+    getAllMovies();
+    async function getAllMovies(){
+        try{
+        const my_response=await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(q)}`,{
+            method:"GET",
+            headers:{
+                "accept":"application/json",
+                "Authorization":'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDA5MTY0NzU0NDIyNjA2MjlhOGE4ZTdmZTVmMTJjOSIsIm5iZiI6MTc5NTQ1Mzg5Ny44NjMwMDAyLCJzdWIiOiI2YjA0NzNjOTg3NGZhNzdiMzI5MTg1Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.BhiGNznIaEJHnHXtjmLz9CgL6l6dJzyTFs2DC2WXyH4'
+            }
+        });
+        if(!my_response.ok){
+            throw new Error(`Unable to fetch response ${my_response.status}`);
+        }
+        const new_my_response=await my_response.json();
+        bifurcateAllMovies(new_my_response);
+    }
+    catch(error){
+        console.error("Error fetching movie data:",error.message);
+    }
+}
+
+function bifurcateAllMovies(new_my_response){
+    new_my_response.results.forEach((new_my_response)=>{
+        const card=document.createElement("div");
+    const poster=document.createElement("img");
+    const desc=document.createElement("p");
+    const title=document.createElement("h2");
+    const rd=document.createElement("h3");
+    const rt=document.createElement("h3");
+    const add=document.createElement("button");
+    const urev=document.createElement("textarea");
+    const urt=document.createElement("input");
+    const sb=document.createElement("button");
+    urt.innerText="Leave a Review";
+    sb.innerText="Submit";
+    const poster_path=new_my_response.poster_path;
+    const posterURL=`https://image.tmdb.org/t/p/w500${poster_path}`;
+
+    poster.src=posterURL;
+    poster.alt=new_my_response.title;
+    add.innerText="Add+";
+
+    title.innerText=new_my_response.title;
+    if((new_my_response.overview||"").length>100){
+        desc.innerText=new_my_response.overview.slice(0,100).trim()+"...";
+    }
+    else{
+        desc.innerText=new_my_response.overview;
+    }
+    rd.innerText=new_my_response.release_date;
+    const va=Math.round(100*new_my_response.vote_average)/100;
+    rt.innerText="⭐"+va;
+    add.innerText="Add+";
+
+    card.classList.toggle("movie");
+
+    card.append(poster);
+    card.append(title);
+    card.append(desc);
+    card.append(rd);
+    card.append(rt);
+    card.append(urev);
+    card.append(urt);
+    card.append(sb);
+    card.append(add);
+    sr.append(card);
+    card.style.display="flex";
+    
+    sb.addEventListener('click',()=>{
+        const revText=urev.value.trim();
+        const revnum=Number(urt.value);
+        const disp=document.createElement("div");
+        disp.innerText="User Review:\n"+ revText + "\n"+"User Rating : "+revnum;
+        urev.remove();
+        urt.remove();
+        card.append(disp);
+    })
+    add.addEventListener('click',()=>{
+        
+        if(add.classList.toggle('clicked_button')){
+            add.innerText="Added"+"✔️";
+            wa.append(card);
+        }
+        else{
+            add.innerText="Add+";
+            card.remove();
+            mov5.append(card);
+        }
+    })
+    })
+    
+}
 })
+
+s.addEventListener('submit',(submit)=>{
+    submit.preventDefault();
+    mov.style.display="none";
+    mov1.style.display="none";
+    sr.innerHTML="";
+    sr.style.display="flex";
+    st.forEach((st)=>{
+            st.style.display="none";
+        })
+    i.style.display="none";
+    let q=si.value.trim();
+     if(!q){
+        sr.innerHTML="";
+        sr.style.display="none";
+        was.style.display="none";
+        i.style.display="none";
+        mov.style.display="flex";
+        mov1.style.display="flex";
+        st.forEach((st)=>{
+            st.style.display="none";
+        })
+        return;
+    }
+    getActorId();
+    async function getActorId(){
+        try{
+        const m_response=await fetch(`https://api.themoviedb.org/3/search/person?query=${encodeURIComponent(q)}`,{
+            method:"GET",
+            headers:{
+                "accept":"application/json",
+                "Authorization":'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDA5MTY0NzU0NDIyNjA2MjlhOGE4ZTdmZTVmMTJjOSIsIm5iZiI6MTc5NTQ1Mzg5Ny44NjMwMDAyLCJzdWIiOiI2YjA0NzNjOTg3NGZhNzdiMzI5MTg1Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.BhiGNznIaEJHnHXtjmLz9CgL6l6dJzyTFs2DC2WXyH4'
+            }
+        });
+        if(!m_response.ok){
+            throw new Error(`Unable to find actor name ${m_response.status}`);
+        }
+        const n_response=await m_response.json();
+        getActorMovies(n_response.results[0].id);
+        }
+        catch(error){
+            console.error(`New Error found:`,error.message);
+        }
+    }
+    async function getActorMovies(actor_id){
+        if(!actor_id)return;
+        try{
+            const id_response=await fetch(`https://api.themoviedb.org/3/discover/movie?with_cast=${actor_id}&sort_by=popularity.desc`,{
+                method:"GET",
+                headers:{
+                    "accept":"application/json",
+                "Authorization":'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDA5MTY0NzU0NDIyNjA2MjlhOGE4ZTdmZTVmMTJjOSIsIm5iZiI6MTc5NTQ1Mzg5Ny44NjMwMDAyLCJzdWIiOiI2YjA0NzNjOTg3NGZhNzdiMzI5MTg1Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.BhiGNznIaEJHnHXtjmLz9CgL6l6dJzyTFs2DC2WXyH4'
+                }
+            })
+            if(!id_response.ok){
+                throw new Error(`Unable to recieve actor work ${id_response.status}`);
+            }
+            const n_id_response=await id_response.json();
+            bifurcateActorMovies(n_id_response);
+        }
+        catch(error){
+            console.error(`New Error found:`,error.message);
+        }
+    }
+    function bifurcateActorMovies(new_my_response){
+    new_my_response.results.forEach((new_my_response)=>{
+    const card=document.createElement("div");
+    const poster=document.createElement("img");
+    const desc=document.createElement("p");
+    const title=document.createElement("h2");
+    const rd=document.createElement("h3");
+    const rt=document.createElement("h3");
+    const add=document.createElement("button");
+    const urev=document.createElement("textarea");
+    const urt=document.createElement("input");
+    const sb=document.createElement("button");
+    urev.innerText="Leave a Review";
+    sb.innerText="Submit";
+    const poster_path=new_my_response.poster_path;
+    const posterURL=`https://image.tmdb.org/t/p/w500${poster_path}`;
+
+    poster.src=posterURL;
+    poster.alt=new_my_response.title;
+    add.innerText="Add+";
+
+    title.innerText=new_my_response.title;
+    if((new_my_response.overview||"").length>100){
+        desc.innerText=new_my_response.overview.slice(0,100).trim()+"...";
+    }
+    else{
+        desc.innerText=new_my_response.overview;
+    }
+    rd.innerText=new_my_response.release_date;
+    const va=Math.round(100*new_my_response.vote_average)/100;
+    rt.innerText="⭐"+va;
+    add.innerText="Add+";
+
+    card.classList.toggle("movie");
+
+    card.append(poster);
+    card.append(title);
+    card.append(desc);
+    card.append(rd);
+    card.append(rt);
+    card.append(urev);
+    card.append(urt);
+    card.append(sb);
+    card.append(add);
+    sr.append(card);
+    card.style.display="flex";
+    
+    sb.addEventListener('click',()=>{
+        const revText=urev.value.trim();
+        const revnum=Number(urt.value);
+        const disp=document.createElement("div");
+        disp.innerText="User Review:\n"+ revText + "\n"+"User Rating : "+revnum;
+        urev.remove();
+        urt.remove();
+        card.append(disp);
+    })
+    add.addEventListener('click',()=>{
+        
+        if(add.classList.toggle('clicked_button')){
+            add.innerText="Added"+"✔️";
+            wa.append(card);
+        }
+        else{
+            add.innerText="Add+";
+            card.remove();
+            mov5.append(card);
+        }
+    })
+    })
+    
+}
+
+})
+
+
+s.addEventListener('submit',(submit)=>{
+    submit.preventDefault();
+    mov.style.display="none";
+    mov1.style.display="none";
+    sr.innerHTML="";
+    sr.style.display="flex";
+    st.forEach((st)=>{
+            st.style.display="none";
+        })
+    i.style.display="none";
+    let q=si.value.trim();
+     if(!q){
+        sr.innerHTML="";
+        sr.style.display="none";
+        was.style.display="none";
+        i.style.display="none";
+        mov.style.display="flex";
+        mov1.style.display="flex";
+        st.forEach((st)=>{
+            st.style.display="none";
+        })
+        return;
+    }
+    getDirectorId();
+    async function getDirectorId(){
+        try{
+        const m_response=await fetch(`https://api.themoviedb.org/3/search/person?query=${encodeURIComponent(q)}`,{
+            method:"GET",
+            headers:{
+                "accept":"application/json",
+                "Authorization":'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDA5MTY0NzU0NDIyNjA2MjlhOGE4ZTdmZTVmMTJjOSIsIm5iZiI6MTc5NTQ1Mzg5Ny44NjMwMDAyLCJzdWIiOiI2YjA0NzNjOTg3NGZhNzdiMzI5MTg1Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.BhiGNznIaEJHnHXtjmLz9CgL6l6dJzyTFs2DC2WXyH4'
+            }
+        });
+        if(!m_response.ok){
+            throw new Error(`Unable to find Director name ${m_response.status}`);
+        }
+        const n_response=await m_response.json();
+        getDirectorMovies(n_response.results[0].id);
+        }
+        catch(error){
+            console.error(`New Error found:`,error.message);
+        }
+    }
+    async function getDirectorMovies(actor_id){
+        if(!actor_id)return;
+        try{
+            const id_response=await fetch(`https://api.themoviedb.org/3/person/$${actor_id}/movie_credits`,{
+                method:"GET",
+                headers:{
+                    "accept":"application/json",
+                "Authorization":'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDA5MTY0NzU0NDIyNjA2MjlhOGE4ZTdmZTVmMTJjOSIsIm5iZiI6MTc5NTQ1Mzg5Ny44NjMwMDAyLCJzdWIiOiI2YjA0NzNjOTg3NGZhNzdiMzI5MTg1Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.BhiGNznIaEJHnHXtjmLz9CgL6l6dJzyTFs2DC2WXyH4'
+                }
+            })
+            if(!id_response.ok){
+                throw new Error(`Unable to recieve actor work ${id_response.status}`);
+            }
+            const n_id_response=await id_response.json();
+            const directed_response=(n_id_response.crew || []).filter(
+                (item) => item.job==="Director"
+            );
+            bifurcateDirectorMovies({results:directed_response});
+        }
+        catch(error){
+            console.error(`New Error found:`,error.message);
+        }
+    }
+    function bifurcateDirectorMovies(new_my_response){
+    new_my_response.results.forEach((new_my_response)=>{
+    const card=document.createElement("div");
+    const poster=document.createElement("img");
+    const desc=document.createElement("p");
+    const title=document.createElement("h2");
+    const rd=document.createElement("h3");
+    const rt=document.createElement("h3");
+    const add=document.createElement("button");
+    const urev=document.createElement("textarea");
+    const urt=document.createElement("input");
+    const sb=document.createElement("button");
+    urev.innerText="Leave a Review";
+    sb.innerText="Submit";
+    const poster_path=new_my_response.poster_path;
+    const posterURL=`https://image.tmdb.org/t/p/w500${poster_path}`;
+
+    poster.src=posterURL;
+    poster.alt=new_my_response.title;
+    add.innerText="Add+";
+
+    title.innerText=new_my_response.title;
+    if((new_my_response.overview||"").length>100){
+        desc.innerText=new_my_response.overview.slice(0,100).trim()+"...";
+    }
+    else{
+        desc.innerText=new_my_response.overview;
+    }
+    rd.innerText=new_my_response.release_date;
+    const va=Math.round(100*new_my_response.vote_average)/100;
+    rt.innerText="⭐"+va;
+    add.innerText="Add+";
+
+    card.classList.toggle("movie");
+
+    card.append(poster);
+    card.append(title);
+    card.append(desc);
+    card.append(rd);
+    card.append(rt);
+    card.append(urev);
+    card.append(urt);
+    card.append(sb);
+    card.append(add);
+    sr.append(card);
+    card.style.display="flex";
+    
+    sb.addEventListener('click',()=>{
+        const revText=urev.value.trim();
+        const revnum=Number(urt.value);
+        const disp=document.createElement("div");
+        disp.innerText="User Review:\n"+ revText + "\n"+"User Rating : "+revnum;
+        sb.remove();
+        urev.remove();
+        urt.remove();
+        card.append(disp);
+    })
+    add.addEventListener('click',()=>{
+        
+        if(add.classList.toggle('clicked_button')){
+            add.innerText="Added"+"✔️";
+            wa.append(card);
+        }
+        else{
+            add.innerText="Add+";
+            card.remove();
+            mov5.append(card);
+        }
+    })
+    })
+    
+}
+
+})
+
 const wb=document.querySelector(".watchlist_button");
 wb.addEventListener('click',()=>{
     if(was.classList.toggle("swatchlist_area")){
