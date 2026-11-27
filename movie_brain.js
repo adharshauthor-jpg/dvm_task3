@@ -812,6 +812,9 @@ function createMovieCard(movie, targetContainer = sr) {
   urev.placeholder = "Leave a Review";
   urt.placeholder = "Your rating";
   sb.innerText = "Submit";
+  urt.min="0";
+  urt.max="10";
+  urt.step="0.5";
 
   poster.src = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
@@ -848,7 +851,11 @@ function createMovieCard(movie, targetContainer = sr) {
     const revText = urev.value.trim();
     const revnum = Number(urt.value);
     const disp = document.createElement("div");
-    disp.innerText = "User Review:\n" + revText + "\n" + "User Rating : " + revnum;
+    if (urt.value.trim() === "" || Number.isNaN(revnum) || revnum > 10 || revnum < 0) {
+  disp.innerText = "Invalid Entry";
+} else {
+  disp.innerText = "User Review:\n" + revText + "\n" + "User Rating : " + revnum;
+}
     sb.remove();
     urev.remove();
     urt.remove();

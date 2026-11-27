@@ -364,3 +364,37 @@ body{
   flex-wrap:wrap;
   row-gap:50px;
 }
+@media (max-width:768px) {
+ .movies{
+  width:100%;
+ }
+ .movies1{
+  width:100%;
+ }
+ .movies2{
+  width:100%;
+ }
+ .movie{
+  width:25%;
+ }
+ .movie p{
+  display:none;
+ }
+}
+@media (max-width:440px) {
+ .movies{
+  width:100%;
+ }
+ .movies1{
+  width:100%;
+ }
+ .movies2{
+  width:100%;
+ }
+ .movie{
+  width:40%;
+ }
+ .movie p{
+  display:none;
+ }
+}
